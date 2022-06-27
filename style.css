@@ -1,0 +1,11 @@
+.container {
+
+    width: 500;
+    border: 1px black solid;
+    max-width: 550px;
+    margin: auto;
+    padding: 30px;
+    
+    text-align: center;
+}
+
