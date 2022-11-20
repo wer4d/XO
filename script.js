@@ -1,5 +1,3 @@
-
-
 //рисуем доску
 var MyCanvas = document.getElementById("MyCanvas")
 var ctx      = MyCanvas.getContext('2d')
@@ -18,105 +16,63 @@ function writeCarvas () {
 
 }
 
-writeCarvas ()
-
-//создаем объект доска
+writeCarvas ()                                  //создаем объект доска
 
 const board = {
     
     widthCell :     3,
     heightCell:     3,
     move :          0,
-    start :         false,
-    activeCellX:    0,
+    start :         false,                      //-- идет ли игра?
+    activeCellX:    0,                          // переменная X для определения ячейки в массиве
     activeCellY:    0,
-    activeCellX1:   0,
+    activeCellX1:   0,                          // переменная Х для определения координат ячейки для рисования х/о
     activeCellY1:   0,
-    activeCellX2:   0,
-    activeCellY2:   0,
     arCell : [  ['null', 'null', 'null'], 
                 ['null', 'null', 'null'], 
-                ['null', 'null', 'null']    ]
-
+                ['null', 'null', 'null']    
+            ]
   }
-  
-  
 
 
-//определяем ячейку по клику, ее номер в массиве и начала координат
-
-MyCanvas.onclick = function(event) {
+MyCanvas.onclick = function(event) {                                    //определяем ячейку по клику, ее номер в массиве и начала координат
     
-    let xclick=event.clientX-10
-    let yclick=event.clientY-80
-    
-    if (xclick>5 && xclick<150 && yclick>5 && yclick<150) {
-        board.activeCellX = 0
-        board.activeCellY = 0
-        board.activeCellX1 = 5
-        board.activeCellY1 = 5
-                 
+   let Rect=MyCanvas.getBoundingClientRect()
+   let xclick=event.clientX-Rect.left                                   //отнимаем от координаты Х клика отступ слева канваса, чтоб получить Х относительно канвы
+   let yclick=event.clientY-Rect.top                                    //TODO не точные координаты у границ левых и верхних ячеек
+
+    if (xclick>0 && xclick<150) {
+        board.activeCellX = 0                                                                   
+        board.activeCellX1 = 5                                                                            
     }
-    else if (xclick>150 && xclick<300 && yclick>5 &&yclick<150) {
-        board.activeCellX = 0
-        board.activeCellY = 1
-        board.activeCellX1 = 155
-        board.activeCellY1 = 5
-             
+
+    else if (xclick>150 && xclick<300) {
+        board.activeCellX = 1
+        board.activeCellX1 = 155        
     }
-    else if (xclick>300 && yclick>5 && yclick<150) {
-        board.activeCellX = 0
-        board.activeCellY = 2
-        board.activeCellX1 = 305
-        board.activeCellY1 = 5
-          
+
+    else if (xclick>300) {
+        board.activeCellX = 2
+        board.activeCellX1 = 305       
+    }
+
+    if (yclick>0 && yclick<150) {                                         
+        board.activeCellY = 0                                                                     
+        board.activeCellY1 = 5                                                 
     }
     
-    else if (xclick>5 && xclick<150 && yclick>150 && yclick<300) {
-        board.activeCellX = 1
-        board.activeCellY = 0
-        board.activeCellX1 = 5
-        board.activeCellY1 = 155
-             
-    }
-    else if (xclick>150 && xclick<300 && yclick>150 && yclick<300) {
-        board.activeCellX = 1
+    else if (yclick>150 && yclick<300) {  
         board.activeCellY = 1
-        board.activeCellX1 = 155
-        board.activeCellY1 = 155
-              
-    }
-    else if (xclick>300 && yclick>150 && yclick<300) {
-        board.activeCellX = 1
-        board.activeCellY = 2
-        board.activeCellX1 = 305
-        board.activeCellY1 = 155
-            
+        board.activeCellY1 = 155             
     }
 
-    else if (xclick>5 && xclick<150 && yclick>300) {
-        board.activeCellX = 2
-        board.activeCellY = 0
-        board.activeCellX1 = 5
-        board.activeCellY1 = 305
-                 
-    }
-    else if (xclick>150 && xclick<300 && yclick>300) {
-        board.activeCellX = 2
-        board.activeCellY = 1
-        board.activeCellX1 = 155
-        board.activeCellY1 = 305
-          
-    }
-    else if (xclick>300 && yclick>300) {
-        board.activeCellX = 2
+    else if (yclick>300) {
         board.activeCellY = 2
-        board.activeCellX1 = 305
-        board.activeCellY1 = 305
-             
+        board.activeCellY1 = 305                
     }
 
-    //console.log('Координаты клика : Cell ', event.clientX, event.clientY, board.activeCellX, board.activeCellY, board.arCell[board.activeCellX][board.activeCellY])
+    console.log('Координаты клика :', event.clientX, event.clientY, board.activeCellX, board.activeCellY, board.arCell[board.activeCellX][board.activeCellY])
+
     // проверка - можно ли ходить?
     if (board.start === true) {
 
@@ -125,12 +81,10 @@ MyCanvas.onclick = function(event) {
 
             draw()                                                  //рисуем крестик или нолик если нет
             finishcheck()                                           //проверка на конец игры
-
         }  
 
         else console.log('сюда ходить нельзя') 
     
-
        if (check(board.arCell[board.activeCellX][board.activeCellY]) === true) {
             board.start = false
             console.log('Игра окончена, победили', board.arCell[board.activeCellX][board.activeCellY])
@@ -142,7 +96,6 @@ MyCanvas.onclick = function(event) {
         
             else 
                 document.getElementsByTagName('h2')[0].innerHTML = 'Игра окончена, победили О, начать заново?'
-
         }
     }
     else console.log('Начние игру - нажав кнопку')
@@ -150,8 +103,7 @@ MyCanvas.onclick = function(event) {
 
 
 
-function draw() {       //рисуем крестик или нолик
-    
+function draw() {       //рисуем крестик или нолик    
     if ( board.move % 2 != 0 ) {
         
         document.getElementsByTagName('h2')[0].innerHTML = 'Игра началась, ходит ' + 'X'
@@ -178,12 +130,10 @@ function draw() {       //рисуем крестик или нолик
         ctx.lineTo(board.activeCellX1+10, board.activeCellY1+130);
         ctx.stroke()  
     }
-       
 } 
   
 
-function finishcheck() {    //провека на конец игры
-    
+function finishcheck() {    //провека на конец игры    
     let f=0
     for (i=0; i<3; i++) {
         for (j=0; j<3; j++) {
@@ -201,14 +151,12 @@ function finishcheck() {    //провека на конец игры
 }
 
 
-
-function check(simbol) {
- 
+function check(simbol) { 
     let count = 0, x=0, y=0, result = false
     
-    //цикл проверяем горизонтальные линии--------------------------------------
-    for (x=0; x<3; x++) {       
-        count=0                 //сбрасываем каунт при переходе на новую линию
+    
+    for (x=0; x<3; x++) {                                       //цикл проверяем горизонтальные линии
+        count=0                                                 //сбрасываем каунт при переходе на новую линию
         for (y=0; y<3; y++) {
 
             if (board.arCell[x][y] === simbol) { 
@@ -219,19 +167,15 @@ function check(simbol) {
 
             if (count === 3) {
             result=true
-            console.log('выхожу из цикла, count=', count) 
-            console.log('строка', x) 
-            break   
-              
+            
+            break                                                           
             }
         }
     }                           
-    //-----------------------------------------------------------------------
-
-
-    //цикл проверяем вертикальные линии --------------------------------------
-    for (y=0; y<3; y++) {       
-        count=0                 //сбрасываем каунт при переходе на новый столбец
+   
+    
+    for (y=0; y<3; y++) {                                       //цикл проверяем вертикальные линии 
+        count=0                                                 //сбрасываем каунт при переходе на новый столбец
         for (x=0; x<3; x++) {
 
             if (board.arCell[x][y] === simbol) { 
@@ -242,21 +186,16 @@ function check(simbol) {
 
             if (count === 3) {
             result=true
-            console.log('выхожу из цикла, count=', count) 
-            console.log('столбец', y)
-            break   
-              
+            
+            break                                               //TODO - зачем - разобраться?      
             }
         }
     }                                           
-    //-------------------------------------------------------------------------
-
-
-    //цикл проверяем диагонали 1------------------------------------------------
-    count=0
+    
+    
+    count=0                                                     //цикл проверяем диагонали 1
     for (x=0; x<3; x++) {                       
-        
-        
+              
         if (board.arCell[x][x] === simbol) { 
                 count++
         }
@@ -264,19 +203,12 @@ function check(simbol) {
         else count=0
 
         if (count === 3) {
-            result=true
-            console.log('выхожу из цикла, count=', count) 
-            console.log('диагональ 1')   
-              
+            result=true                          
         }
-
     } 
-                                                 
-    //-----------------------------------------------------------------------
 
-
-    //цикл проверяем диагонали 2 --------------------------------------------
-    count=0
+    
+    count=0                                                       //цикл проверяем диагонали 2
     for (x=0, y=2; x<3, y>-1; x++, y--) {           
 
         if (board.arCell[x][y] === simbol) { 
@@ -286,31 +218,27 @@ function check(simbol) {
         else count=0
 
         if (count === 3) {
-            result=true
-            console.log('выхожу из цикла, count=', count) 
-            console.log('диагональ 2')
-
+            result=true         
         }   
 
     }                                                   
-    //-------------------------------------------------------------------------
-    
+        
     return result
-
 }
 
-function getRandomInt (min, max) {
+
+function getRandomInt (min, max) {      //-- определяем кто ходит
     min = Math.ceil(min)
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function start() {
+
+function start() {                      //--начинаем игру -- рисуем доску -- обнуляем массив -- определяем кто ходит
     
     board.start = true
     board.move = getRandomInt (0, 1)
-    console.log(board.move)
-
+   
     writeCarvas ()
     
     for (x=0; x<3; x++) {       
@@ -329,3 +257,5 @@ function start() {
         document.getElementsByTagName('h2')[0].innerHTML = 'Игра началась, ходит ' + 'X'
 }
 
+//TODO сделать запись результатов
+//TODO на BD
