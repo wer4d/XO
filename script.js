@@ -1,9 +1,17 @@
 //рисуем доску
-var MyCanvas = document.getElementById("MyCanvas")
-var ctx      = MyCanvas.getContext('2d')
+const   screenX = window.screen.availWidth/window.screen.availHeight
 
-MyCanvas.width ='450'
-MyCanvas.height='450'
+var     MyCanvas = document.getElementById("MyCanvas")
+var     ctx      = MyCanvas.getContext('2d')
+
+if (screenX <0.7) {
+    MyCanvas.width ='200'                           //размеры поля если экран вертикальный (мобилка)
+    MyCanvas.height='200'
+}
+else {
+    MyCanvas.width ='450'                           //размеры поля если экран горизонтальный (ПК)
+    MyCanvas.height='450'    
+}
 
 function writeCarvas () {
     
@@ -36,39 +44,39 @@ const board = {
 
 
 MyCanvas.onclick = function(event) {                                    //определяем ячейку по клику, ее номер в массиве и начала координат
-    
+   
    let Rect=MyCanvas.getBoundingClientRect()
    let xclick=event.clientX-Rect.left                                   //отнимаем от координаты Х клика отступ слева канваса, чтоб получить Х относительно канвы
-   let yclick=event.clientY-Rect.top                                    //TODO не точные координаты у границ левых и верхних ячеек
+   let yclick=event.clientY-Rect.top                                    
 
-    if (xclick>0 && xclick<150) {
+    if (xclick>0 && xclick<MyCanvas.width/3) {                          //определяем относительные координаты откуда рисовать потом фигуру по Х
         board.activeCellX = 0                                                                   
         board.activeCellX1 = 5                                                                            
     }
 
-    else if (xclick>150 && xclick<300) {
+    else if (xclick>MyCanvas.width/3 && xclick<MyCanvas.width/3*2) {    
         board.activeCellX = 1
-        board.activeCellX1 = 155        
+        board.activeCellX1 = MyCanvas.width/3+5        
     }
 
-    else if (xclick>300) {
+    else if (xclick>MyCanvas.width/3*2) {                               //определяем относительные координаты откуда рисовать потом фигуру по У
         board.activeCellX = 2
-        board.activeCellX1 = 305       
+        board.activeCellX1 = MyCanvas.width/3*2+5       
     }
 
-    if (yclick>0 && yclick<150) {                                         
+    if (yclick>0 && yclick<MyCanvas.height/3) {                                         
         board.activeCellY = 0                                                                     
         board.activeCellY1 = 5                                                 
     }
     
-    else if (yclick>150 && yclick<300) {  
+    else if (yclick>MyCanvas.height/3 && yclick<MyCanvas.height/3*2) {  
         board.activeCellY = 1
-        board.activeCellY1 = 155             
+        board.activeCellY1 = MyCanvas.height/3+5             
     }
 
-    else if (yclick>300) {
+    else if (yclick>MyCanvas.height/3*2) {
         board.activeCellY = 2
-        board.activeCellY1 = 305                
+        board.activeCellY1 = MyCanvas.height/3*2+5                
     }
 
     console.log('Координаты клика :', event.clientX, event.clientY, board.activeCellX, board.activeCellY, board.arCell[board.activeCellX][board.activeCellY])
@@ -91,43 +99,42 @@ MyCanvas.onclick = function(event) {                                    //опр
             
             if (board.move % 2 != 0) {
         
-                document.getElementsByTagName('h2')[0].innerHTML = 'Игра окончена, победили Х, начать заново?'
+                document.getElementsByTagName('h3')[0].innerHTML = 'Игра окончена, победили Х, начать заново?'
             }
         
             else 
-                document.getElementsByTagName('h2')[0].innerHTML = 'Игра окончена, победили О, начать заново?'
+                document.getElementsByTagName('h3')[0].innerHTML = 'Игра окончена, победили О, начать заново?'
         }
     }
     else console.log('Начние игру - нажав кнопку')
 }
 
 
-
 function draw() {       //рисуем крестик или нолик    
     if ( board.move % 2 != 0 ) {
         
-        document.getElementsByTagName('h2')[0].innerHTML = 'Игра началась, ходит ' + 'X'
+        document.getElementsByTagName('h3')[0].innerHTML = 'Игра началась, ходит ' + 'X'
         board.arCell[board.activeCellX][board.activeCellY] = 'o' //пишем в массив нолик
         board.move ++
         ctx.beginPath()
         ctx.lineWidth = 5 
         ctx.strokeStyle = "black"
-        ctx.arc(board.activeCellX1+70, board.activeCellY1+70,50,0, 2*Math.PI , true)
+        ctx.arc(board.activeCellX1+MyCanvas.width/3/2, board.activeCellY1+MyCanvas.height/3/2,MyCanvas.height/3/3,0, 2*Math.PI , true)  //относительные координаты и радиус для круга 
         ctx.stroke()
     }
         
     else {
 
-        document.getElementsByTagName('h2')[0].innerHTML = 'Игра началась, ходит ' + 'O'
+        document.getElementsByTagName('h3')[0].innerHTML = 'Игра началась, ходит ' + 'O'
         board.arCell[board.activeCellX][board.activeCellY] = 'x' //пишем в массив крестик
         board.move ++
         ctx.beginPath()
         ctx.lineWidth = 5 
         ctx.strokeStyle = "black"
         ctx.moveTo(board.activeCellX1+10, board.activeCellY1+10);
-        ctx.lineTo(board.activeCellX1+130, board.activeCellY1+130);
-        ctx.moveTo(board.activeCellX1+130, board.activeCellY1+10);
-        ctx.lineTo(board.activeCellX1+10, board.activeCellY1+130);
+        ctx.lineTo(board.activeCellX1+MyCanvas.width/3*0.8, board.activeCellY1+MyCanvas.height/3*0.8);                                  //относительные координаты и длина для линии
+        ctx.moveTo(board.activeCellX1+MyCanvas.width/3*0.8, board.activeCellY1+10);
+        ctx.lineTo(board.activeCellX1+10, board.activeCellY1+MyCanvas.height/3*0.8); 
         ctx.stroke()  
     }
 } 
@@ -145,7 +152,7 @@ function finishcheck() {    //провека на конец игры
     
     if (f===0) { 
         console.log('Игра окончена - ничья! Начните заново', board.arCell)  
-        document.getElementsByTagName('h2')[0].innerHTML = 'Игра окончена - ничья! Начните заново'
+        document.getElementsByTagName('h3')[0].innerHTML = 'Игра окончена - ничья! Начните заново'
     }
 
 }
@@ -250,11 +257,11 @@ function start() {                      //--начинаем игру -- рис�
 
     if (board.move % 2 != 0) {
         
-        document.getElementsByTagName('h2')[0].innerHTML = 'Игра началась, ходит ' + 'O'
+        document.getElementsByTagName('h3')[0].innerHTML = 'Игра началась, ходит ' + 'O'
     }
 
     else 
-        document.getElementsByTagName('h2')[0].innerHTML = 'Игра началась, ходит ' + 'X'
+        document.getElementsByTagName('h3')[0].innerHTML = 'Игра началась, ходит ' + 'X'
 }
 
 //TODO сделать запись результатов

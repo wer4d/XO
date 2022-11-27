@@ -1,11 +1,22 @@
-.container {
 
-    width: 500;
-    border: 1px black solid;
-    max-width: 550px;
-    margin: auto;
-    padding: 30px;
-    
-    text-align: center;
-}
+    @media (max-width: 1920px) {   
+        .container {
+            width: 500;
+            margin: 0 auto;
+            border: 1px black solid;
+            max-width: 550px;
+            padding: 20px;
+            text-align: center;
+        }     
+    }
 
+    @media (max-width: 480px) {
+        .container {
+            width: 400;
+            margin: 0 auto;
+            border: 1px black solid;
+            max-width: 450px;
+            padding: 10px;
+            text-align: center;
+        }               
+    }
